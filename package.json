@@ -1,0 +1,35 @@
+{
+  "name": "transportiert",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "server-dev": "cross-env NODE_ENV=test nodemon server/index.js",
+    "client-dev": "npm start --prefix client",
+    "start-dev": "concurrently \"npm run server-dev\" \"npm run client-dev\""
+  },
+  "author": "",
+  "license": "",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.17.2",
+    "concurrently": "^3.5.1",
+    "cross-env": "^5.0.5",
+    "express": "^4.15.3",
+    "express-promise-router": "^2.0.0",
+    "joi": "^10.6.0",
+    "jsonwebtoken": "^7.4.1",
+    "mongoose": "^5.0.4",
+    "morgan": "^1.8.2",
+    "passport": "^0.3.2",
+    "passport-facebook-token": "^3.3.0",
+    "passport-google-plus-token": "^2.1.0",
+    "passport-jwt": "^2.2.1",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0",
+    "rewire": "^2.5.2"
+  }
+}
