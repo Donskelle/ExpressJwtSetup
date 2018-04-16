@@ -24,15 +24,10 @@ class LoginForm extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    console.log(e)
-    console.log(this.state)
-
 
     axios.post('api/users/signin/', this.state)
       .then(function (response) {
-        console.log("response");
-        console.log(response);
-        this.props.handleLogin(response.token)
+        this.props.handleLogin(response)
       })
       .catch(function (error) {
         console.log(error);

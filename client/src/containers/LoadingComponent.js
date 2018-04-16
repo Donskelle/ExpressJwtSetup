@@ -8,7 +8,7 @@ const LoadingComponent = ({ isLoading, error }) => {
     }
     // Handle the error state
     else if (error) {
-        return <div>Sorry, there was a problem loading the page.</div>;
+        return <div>Ein Fehler ist passiert.</div>;
     }
     else {
         return null;

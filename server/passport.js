@@ -64,7 +64,7 @@ passport.use('facebookToken', new FacebookTokenStrategy({
   clientID: config.oauth.facebook.clientID,
   clientSecret: config.oauth.facebook.clientSecret,
   profileFields: ["id", "birthday", "first_name", "last_name", "gender", "email", "picture"],
-  scope: ["user_about_me"],
+  scope: ["user_about_me",],
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     console.log('profile', profile);
@@ -76,6 +76,7 @@ passport.use('facebookToken', new FacebookTokenStrategy({
     if (existingUser) {
       return done(null, existingUser);
     }
+
 
     const birth_year = parseInt(profile._json.birthday.substring(profile._json.birthday.length - 4));
 

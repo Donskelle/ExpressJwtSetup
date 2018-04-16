@@ -73,6 +73,11 @@ const userSchema = new Schema({
   commercial: {
     type: Boolean,
     default: false,
+  },
+  address:{
+    street: String,
+    city: String,
+    zip: Number
   }
 });
 

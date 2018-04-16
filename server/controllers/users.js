@@ -43,18 +43,19 @@ module.exports = {
 
     // Generate the token
     const token = signToken(newUser);
+    const {local, ...responseUser} = newUser.toObject({ virtuals: true });
     // Respond with token
-    res.status(200).json({ token });
+    res.status(200).json({ token, user: responseUser });
   },
 
   signIn: async (req, res, next) => {
     // Generate token
     const token = signToken(req.user);
-    res.status(200).json({ token });
+    const {local, ...responseUser} = req.user;
+    res.status(200).json({ token, user: responseUser });
   },
 
   emailAvailable: async (req, res, next) => {
-
     const foundUser = await User.findOne({ 'local.email': req.body.email });
     let emailAvailable = true;
     if (foundUser) {
@@ -66,7 +67,7 @@ module.exports = {
   facebookOAuth: async (req, res, next) => {
     // Generate token
     const token = signToken(req.user);
-    res.status(200).json({ token });
+    res.status(200).json({ token, user: req.user });
   },
 
   secret: async (req, res, next) => {

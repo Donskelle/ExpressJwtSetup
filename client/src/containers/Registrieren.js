@@ -15,6 +15,7 @@ class Registrieren extends Component {
                 birth_year: '',
             },
             submited: false,
+
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputChangeEmail = this.handleInputChangeEmail.bind(this);
@@ -43,7 +44,7 @@ class Registrieren extends Component {
     handleSubmit(e) {
         e.preventDefault();
 
-        axios.post('users/signin/', this.state)
+        axios.post('/api/users/signin/', this.state)
             .then(function (response) {
                 console.log(response);
             })
