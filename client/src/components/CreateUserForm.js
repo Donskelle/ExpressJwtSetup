@@ -27,8 +27,12 @@ class CreateUserForm extends Component {
         });
     }
 
+
+    // check if email is valid
     handleInputChangeEmail(event) {
         const {name, value} = event.target;
+        
+
 
         this.setState({
             [name]: value

@@ -1,12 +1,10 @@
-
 /**
  * Reads all inputs
  * @param {Node} form 
- * @param {Object} schema 
  */
-export function readForm(form, schema) {
+export function readForm(form) {
     // super dirty -- Choices uses additional inputs we dont wanna track
-    const inputs = Array.from(form.querySelectorAll("input.uk-input,select.uk-select, input[type='hidden']"));
+    const inputs = Array.from(form.querySelectorAll("input, select, input[type='hidden']"));
     let formData = {};
     inputs.forEach(input => {
       formData[input.name] = input.value;
@@ -14,5 +12,3 @@ export function readForm(form, schema) {
   
     return formData;
   }
-  
-  

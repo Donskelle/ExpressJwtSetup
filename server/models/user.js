@@ -49,9 +49,6 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  display_name: {
-    type: String,
-  },
   image: {
     type: String,
   },
@@ -74,6 +71,11 @@ const userSchema = new Schema({
     default: false,
   }
 });
+
+
+userSchema.virtual('fullName').
+  get(function () { return this.first_name + ' ' + this.last_name; });
+
 
 userSchema.pre('save', async function (next) {
   try {
