@@ -21,6 +21,7 @@
     "joi": "^10.6.0",
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^5.0.4",
+    "mongoose-sanitizer": "^1.0.0",
     "morgan": "^1.8.2",
     "passport": "^0.3.2",
     "passport-facebook-token": "^3.3.0",

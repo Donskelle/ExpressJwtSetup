@@ -37,16 +37,18 @@ class LoginForm extends Component {
       .catch(function (error) {
         console.log(error);
       });
-  } 
+  }
 
   render() {
     return (
-      <h2>E-Mail Login</h2>
-      <form onSubmit={this.handleSubmit}>
-        <input name="email" type="text" onChange={this.handleInputChange} />
-        <input type="password" name="password" onChange={this.handleInputChange} />
-        <button name="Login">Login</button>
-      </form>
+      <div>
+        <h2>E-Mail Login</h2>
+        <form onSubmit={this.handleSubmit}>
+          <input name="email" type="text" onChange={this.handleInputChange} />
+          <input type="password" name="password" onChange={this.handleInputChange} />
+          <button name="Login">Login</button>
+        </form>
+      </div>
     );
   }
 }

@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const sanitizerPlugin = require('mongoose-sanitizer');
+
 const Schema = mongoose.Schema;
+
+
 
 // Create a schema
 const userSchema = new Schema({
@@ -72,6 +76,8 @@ const userSchema = new Schema({
   }
 });
 
+// checks every field value for dangerous code before saveing to db
+userSchema.plugin(sanitizerPlugin);
 
 userSchema.virtual('fullName').
   get(function () { return this.first_name + ' ' + this.last_name; });

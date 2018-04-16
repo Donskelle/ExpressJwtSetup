@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const sanitizerPlugin = require('mongoose-sanitizer');
+
 const Schema = mongoose.Schema;
 
 // Create a schema
@@ -17,25 +19,14 @@ const messageSchema = new Schema({
     },
     request_transport: {
         type: Schema.Types.ObjectId,
-        ref: 'user',
+        ref: 'transport',
     },
-    budget: {
-        type: Number,
-    },
-    priceNogation: {
-        type: Boolean,
-    },
-    active: {
-        type: Boolean,
-    }
 });
 
-requestTransportSchema.index({ "geometry.from": "2dsphere" });
-requestTransportSchema.index({ "geometry.to": "2dsphere" });
-
+messageSchema.plugin(sanitizerPlugin);
 
 // Create a model
-const Transport = mongoose.model('transport', requestTransportSchema);
+const Message = mongoose.model('message', messageSchema);
 
 // Export the model
-module.exports = Transport;
+module.exports = Message;

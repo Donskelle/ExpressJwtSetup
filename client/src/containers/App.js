@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import './App.css';
 
-import LoginForm from './components/LoginForm'
+import { Route, Switch, BrowserRouter } from 'react-router-dom';
+/* eslint-disable import/first */
+
+import Impressum from './Impressum'
+import Home from './Home'
+import Registrieren from './Registrieren'
+import UserNav from './../components/UserNav';
+import Nav from './../components/Nav';
 
 class App extends Component {
   constructor(props) {
@@ -12,17 +18,13 @@ class App extends Component {
   }
 
   handleLogout() {
-    if (localStorage) {
-      localStorage.removeItem("jwt")
-    }
+    localStorage.removeItem('jwt')
 
     this.setState({ isLoggedIn: false });
   }
 
   handleLogin(jwt) {
-    if (localStorage) {
-      localStorage.jwt = jwt;
-    }
+    localStorage.setItem('jwt', jwt);
 
     this.setState({ isLoggedIn: true, jwt });
   }
@@ -30,16 +32,21 @@ class App extends Component {
   render() {
     const isLoggedIn = this.state.isLoggedIn;
 
-    const content = isLoggedIn ? (
-      <a onClick={this.handleLogout}>Wieder raus</a>
-    ) : (
-        <LoginForm onLogin={this.handleLogin} />
-      );
-
     return (
-      <div>
-        {content}
-      </div>
+      <BrowserRouter>
+        <div className='container'>
+          <Nav />
+          <UserNav />
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/Impressum' component={Impressum} />
+            <Route exact path='/Registrieren' component={Registrieren} />
+            <Route render={function () {
+              return <p>Not Found</p>
+            }} />
+          </Switch>
+        </div>
+      </BrowserRouter>
     );
   }
 }

@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const sanitizerPlugin = require('mongoose-sanitizer');
+
 const Schema = mongoose.Schema;
 
 // Create a schema
