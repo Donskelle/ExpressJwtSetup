@@ -25,17 +25,15 @@ class Registrieren extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        { form: { ...this.state.form, name: value} }
-        this.setState({
-            [name]: value
-        });
+        
+        this.setState({ form: { ...this.state.form } });
     }
 
 
     // check if email is valid
     handleInputChangeEmail(event) {
-        const {name, value} = event.target;
-        
+        const { name, value } = event.target;
+
         this.setState({
             [name]: value
         });
@@ -56,15 +54,17 @@ class Registrieren extends Component {
 
     render() {
         return (
-            <h2>Erstelle neuen Nutzer</h2>
-            <form onSubmit={this.handleSubmit}>
-                <input name="email" type="text" onChange={this.handleInputChangeEmail} />
-                <input type="password" name="password" onChange={this.handleInputChange} />
-                <input type="password" name="password_repeat" onChange={this.handleInputChange} />
-                <input type="text" name="first_name" onChange={this.handleInputChange} />
-                <input type="text" name="last_name" onChange={this.handleInputChange} />
-                <button name="Login">Login</button>
-            </form>
+            <div>
+                <h2>Erstelle neuen Nutzer</h2>
+                <form onSubmit={this.handleSubmit}>
+                    <input name="email" type="text" onChange={this.handleInputChangeEmail} />
+                    <input type="password" name="password" onChange={this.handleInputChange} />
+                    <input type="password" name="password_repeat" onChange={this.handleInputChange} />
+                    <input type="text" name="first_name" onChange={this.handleInputChange} />
+                    <input type="text" name="last_name" onChange={this.handleInputChange} />
+                    <button name="Login">Login</button>
+                </form>
+            </div>
         );
     }
 }

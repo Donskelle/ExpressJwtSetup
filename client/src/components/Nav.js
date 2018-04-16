@@ -8,10 +8,10 @@ function Nav () {
         <NavLink exact activeClassName='active' to='/'>Home</NavLink>
       </li>
       <li>
-        <NavLink activeClassName='active' to='/Impressum'>Battle</NavLink>
+        <NavLink activeClassName='active' to='/Impressum'>Impressum</NavLink>
       </li>
       <li>
-        <NavLink activeClassName='active' to='/Registrieren'>Popular</NavLink>
+        <NavLink activeClassName='active' to='/Registrieren'>Registrieren</NavLink>
       </li>
     </ul>
   )

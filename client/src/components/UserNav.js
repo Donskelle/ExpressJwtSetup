@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { NavLink } from 'react-router-dom';
+import FacebookLogin from 'react-facebook-login';
 
 import LoginForm from './../components/LoginForm';
+
 
 
 class UserNav extends Component {
@@ -10,21 +12,30 @@ class UserNav extends Component {
         super(props);
     }
 
+    responseFacebook(respone) {
+        console.log(respone);
+
+        axios.post('api/users/oauth/facebook')
+    }
+
     render() {
-        const content = this.props.user ? (
-            <div>
+        if (this.props.user) {
+            return (<div>
                 <a onClick={this.props.handleLogout}>Wieder raus</a>
-            </div>
-        ) : (
-                <div>
-                    <LoginForm onLogin={this.handleLogin} />
-                    <NavLink />
-                </div>
-            );
+            </div>);
+        }
 
         return (
-            { content }
-        )
+            <div>
+                <FacebookLogin
+                    appId="102026413313755"
+                    autoLoad={true}
+                    fields="id,name,first_name,last_name,gender,birthday,picture,email"
+                    callback={this.responseFacebook} />
+                <LoginForm onLogin={this.props.handleLogin} />
+                <NavLink to='/Registrieren'>Registrieren</NavLink>
+            </div >
+        );
     }
 }
 

@@ -1,13 +1,28 @@
 import React, { Component } from 'react';
 
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
-/* eslint-disable import/first */
+import Loadable from 'react-loadable';
 
-import Impressum from './Impressum'
-import Home from './Home'
-import Registrieren from './Registrieren'
+/* eslint-disable import/first */
+import LoadingComponent from './LoadingComponent';
 import UserNav from './../components/UserNav';
 import Nav from './../components/Nav';
+
+const AsyncHome = Loadable({
+  loader: () => import("./Home"),
+  loading: LoadingComponent
+});
+
+const AsyncImpressum = Loadable({
+  loader: () => import("./Impressum"),
+  loading: LoadingComponent
+});
+
+const AsyncRegistrieren = Loadable({
+  loader: () => import("./Registrieren"),
+  loading: LoadingComponent
+});
+
 
 class App extends Component {
   constructor(props) {
@@ -38,9 +53,9 @@ class App extends Component {
           <Nav />
           <UserNav />
           <Switch>
-            <Route exact path='/' component={Home} />
-            <Route exact path='/Impressum' component={Impressum} />
-            <Route exact path='/Registrieren' component={Registrieren} />
+            <Route exact path='/' component={AsyncHome} />
+            <Route exact path='/Impressum' component={AsyncImpressum} />
+            <Route exact path='/Registrieren' component={AsyncRegistrieren} />
             <Route render={function () {
               return <p>Not Found</p>
             }} />
