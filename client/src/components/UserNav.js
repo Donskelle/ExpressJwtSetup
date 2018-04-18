@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { NavLink } from 'react-router-dom';
+import { NavLink ,withRouter} from 'react-router-dom';
 import FacebookLogin from 'react-facebook-login';
 
 import LoginForm from './../components/LoginForm';
-import { Query } from 'mongoose';
+
 
 
 
@@ -13,7 +13,13 @@ class UserNav extends Component {
         super(props);
 
         this.responseFacebook = this.responseFacebook.bind(this);
+        this.logout = this.logout.bind(this);
 
+    }
+
+    logout() {
+        this.props.history.push("/");
+        this.props.handleLogout();
     }
 
     responseFacebook(fbRes) {
@@ -34,7 +40,7 @@ class UserNav extends Component {
     render() {
         if (this.props.user) {
             return (<div>
-                <a onClick={()=>{this.props.handleLogout;this.props.history.push("/");}}>Wieder raus</a>
+                <a onClick={this.logout}>Wieder raus</a>
             </div>);
         }
 
@@ -45,11 +51,11 @@ class UserNav extends Component {
                     fields="id,name,first_name,last_name,gender,birthday,picture,email"
                     scope="email,user_birthday,public_profile"
                     callback={this.responseFacebook} />
-                <LoginForm handleLogin={this.props.handleLogin} />
+                <LoginForm handleLogin={this.logout} />
                 <NavLink to='/Registrieren'>Registrieren</NavLink>
             </div >
         );
     }
 }
 
-export default UserNav;
+export default withRouter(UserNav);

@@ -26,7 +26,7 @@ class Registrieren extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
-        
+
         this.setState({ form: { ...this.state.form } });
     }
 
@@ -58,11 +58,15 @@ class Registrieren extends Component {
             <div>
                 <h2>Erstelle neuen Nutzer</h2>
                 <form onSubmit={this.handleSubmit}>
-                    <input name="email" type="text" onChange={this.handleInputChangeEmail} />
-                    <input type="password" name="password" onChange={this.handleInputChange} />
-                    <input type="password" name="password_repeat" onChange={this.handleInputChange} />
-                    <input type="text" name="first_name" onChange={this.handleInputChange} />
-                    <input type="text" name="last_name" onChange={this.handleInputChange} />
+                    email<input name="email" type="text" onChange={this.handleInputChangeEmail} />
+                    password: <input type="password" name="password" onChange={this.handleInputChange} />
+                    password: <input type="password" name="password_repeat" onChange={this.handleInputChange} />
+                    Firt: <input type="text" name="first_name" onChange={this.handleInputChange} />
+                    Last <input type="text" name="last_name" onChange={this.handleInputChange} /> 
+                    Gender: <select name="anrede" size="1">
+                        <option value="frau">Frau</option>
+                        <option value="herr">Herr</option>
+                    </select>
                     <button name="Login">Login</button>
                 </form>
             </div>

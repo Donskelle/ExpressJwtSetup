@@ -1,10 +1,12 @@
 import React from 'react';
 
+import { CircularProgress } from 'material-ui/Progress';
 
-const LoadingComponent = ({ isLoading, error }) => {
+
+const LoadingComponent = ({ pastDelay, error }) => {
     // Handle the loading state
-    if (isLoading) {
-        return <div>Loading...</div>;
+    if (pastDelay) {
+        return <CircularProgress size={50} />;
     }
     // Handle the error state
     else if (error) {
