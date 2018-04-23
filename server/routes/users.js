@@ -9,7 +9,12 @@ const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 
 router.route('/')
-  .post(validateBody(schemas.signupSchema), UsersController.signUp);
+  .post(validateBody(schemas.signupSchema), UsersController.signUp)
+  .get(passportJWT, UsersController.getOwnUser)
+  .put(passportJWT, validateBody(schemas.updateUserSchema), UsersController.updateUser);
+
+router.route('/:id')
+  .get(UsersController.getUser);
 
 router.route('/signin')
   .post(validateBody(schemas.authSchema), passportSignIn, UsersController.signIn);
@@ -22,8 +27,5 @@ router.route('/emailavailable')
 
 router.route('/oauth/facebook')
   .post(passport.authenticate('facebookToken', { session: false }), UsersController.facebookOAuth);
-
-router.route('/secret')
-  .get(passportJWT, UsersController.secret);
 
 module.exports = router;

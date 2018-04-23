@@ -9,7 +9,9 @@ import { clearStorage, getStorage, setStorage } from './../utils/request.js'
 import LoadingComponent from './../components/LoadingComponent';
 import Nav from './../components/Nav';
 
-
+import ReactJoiValidations from 'react-joi-validation';
+import Joi from 'joi-browser';
+ReactJoiValidations.setJoi(Joi);
 
 const AsyncUserNav = Loadable({
   loader: () => import("./../components/UserNav"),
@@ -81,7 +83,7 @@ class App extends Component {
           <Switch>
             <Route exact path='/' component={AsyncHome} />
             <Route exact path='/Impressum' component={AsyncImpressum} />
-            <Route exact path='/Registrieren' component={AsyncRegistrieren} />
+            <Route exact path='/Registrieren' render={() => <AsyncRegistrieren handleLogin={this.handleLogin} />} />
             <Route exact path='/Profil' render={() => <AsyncProfil user={this.state.user} />} />
             <Route render={function () {
               return <p>Not Found</p>

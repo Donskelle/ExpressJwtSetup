@@ -4,7 +4,7 @@ const { JWT_SECRET } = require('../configuration');
 
 signToken = user => {
   return JWT.sign({
-    iss: 'CodeWorkr',
+    iss: 'Transportiert',
     sub: user.id,
     iat: new Date().getTime(), // current time
     exp: new Date().setDate(new Date().getDate() + 1) // current time + 1 day ahead
@@ -43,7 +43,7 @@ module.exports = {
 
     // Generate the token
     const token = signToken(newUser);
-    const {local, ...responseUser} = newUser.toObject({ virtuals: true });
+    const { local, ...responseUser } = newUser.toObject({ virtuals: true });
     // Respond with token
     res.status(200).json({ token, user: responseUser });
   },
@@ -51,7 +51,7 @@ module.exports = {
   signIn: async (req, res, next) => {
     // Generate token
     const token = signToken(req.user);
-    const {local, ...responseUser} = req.user;
+    const { local, ...responseUser } = req.user;
     res.status(200).json({ token, user: responseUser });
   },
 
@@ -70,8 +70,21 @@ module.exports = {
     res.status(200).json({ token, user: req.user });
   },
 
-  secret: async (req, res, next) => {
-    console.log('I managed to get here!');
-    res.json({ secret: "resource" });
-  }
+  getUser: async (req, res, next) => {
+    const user = await User.findById(req.params.id);
+    if (user)
+      res.json(user.toJSON());
+    else {
+      res.json({});
+    }
+  },
+
+  getOwnUser: async (req, res, next) => {
+    res.json(req.user.toJSON());
+  },
+  updateUser: async (req, res, next) => {
+    req.user.set(req.body);
+    req.user.save();
+    res.json(req.user.toJSON());
+  },
 }

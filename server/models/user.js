@@ -74,10 +74,19 @@ const userSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  address:{
-    street: String,
-    city: String,
-    zip: Number
+  insurance: {
+    type: String,
+  },
+  company: {
+    name: String,
+    address: {
+      street: String,
+      city: String,
+      zip: String
+    },
+  },
+  description: {
+    type: String,
   }
 });
 
@@ -90,7 +99,6 @@ userSchema.virtual('fullName').
 
 userSchema.pre('save', async function (next) {
   try {
-    console.log('entered');
     if (this.method !== 'local') {
       next();
     }
@@ -101,7 +109,6 @@ userSchema.pre('save', async function (next) {
     const passwordHash = await bcrypt.hash(this.local.password, salt);
     // Re-assign hashed version over original, plain text password
     this.local.password = passwordHash;
-    console.log('exited');
     next();
   } catch (error) {
     next(error);
@@ -115,6 +122,18 @@ userSchema.methods.isValidPassword = async function (newPassword) {
     throw new Error(error);
   }
 }
+
+
+userSchema.options.toJSON = {
+  transform: function (doc, ret, options) {
+    ret.id = ret._id;
+    delete ret._id;
+    delete ret.__v;
+    delete ret.local;
+    delete ret.facebook;
+    return ret;
+  }
+};
 
 // Create a model
 const User = mongoose.model('user', userSchema);
