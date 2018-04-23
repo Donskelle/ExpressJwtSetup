@@ -20,7 +20,7 @@ export function clearStorage() {
 
 
 export function isAuthorized(response) {
-  if (response.body == 'Unauthorized') {
+  if (response.body === 'Unauthorized') {
     return true;
   }
   return false;

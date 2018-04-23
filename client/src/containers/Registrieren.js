@@ -4,7 +4,7 @@ import axios from 'axios';
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 import { Button } from 'material-ui';
 
-import { NavLink, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 
 import './registrieren.css';
@@ -69,8 +69,9 @@ class Registrieren extends Component {
         e.preventDefault();
         this.setState({ submited: true });
 
-        let { repeatPassword, ...formDataClear } = this.state.formData;
-        formDataClear.birth_year = parseInt(this.state.formData.birth_year)
+        let { repeatPassword, birth_year, ...formDataClear } = this.state.formData;
+        
+        formDataClear.birth_year = parseInt(birth_year);
 
         axios.post('/api/users/', formDataClear)
             .then((response) => {
@@ -87,7 +88,7 @@ class Registrieren extends Component {
 
     render() {
         const { formData, submitted } = this.state;
-        const possibleYears = Array();
+        const possibleYears = [];
         const currentYear = new Date().getFullYear();
         for (let index = 0; index < 100; index++) {
             let year = currentYear - 17 - index;

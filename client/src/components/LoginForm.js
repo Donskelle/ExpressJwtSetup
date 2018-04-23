@@ -83,8 +83,8 @@ class LoginForm extends Component {
         this.props.handleLogin(response)
       })
       .catch(function (error) {
-        if(error.response.status == 401) {
-          alert("Falscher Logindaten");
+        if(error.response.status === 401) {
+          alert("Falsche Logindaten");
         }
         console.log(error);
       })

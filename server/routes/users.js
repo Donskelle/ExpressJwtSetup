@@ -7,11 +7,14 @@ const { validateBody, schemas } = require('../helpers/routeHelpers');
 const UsersController = require('../controllers/users');
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
+const images = require('../helpers/images');
+
+
 
 router.route('/')
   .post(validateBody(schemas.signupSchema), UsersController.signUp)
   .get(passportJWT, UsersController.getOwnUser)
-  .put(passportJWT, validateBody(schemas.updateUserSchema), UsersController.updateUser);
+  .put(passportJWT, images.multer.single('image'), images.sendUploadToGCS, validateBody(schemas.updateUserSchema), UsersController.updateUser);
 
 router.route('/:id')
   .get(UsersController.getUser);

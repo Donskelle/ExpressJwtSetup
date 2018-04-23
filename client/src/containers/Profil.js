@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Avatar from 'material-ui/Avatar';
-import deepOrange from 'material-ui/colors/deepOrange';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 
