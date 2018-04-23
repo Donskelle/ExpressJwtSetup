@@ -30,7 +30,6 @@ class UserNav extends Component {
                     this.props.handleLogin(response);
                 })
                 .catch(function (error) {
-                    
                     console.log(error);
                 });
 

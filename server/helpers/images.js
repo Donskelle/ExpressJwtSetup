@@ -16,6 +16,7 @@
 const Storage = require('@google-cloud/storage');
 const config = require('../configuration');
 const path = require('path');
+const sharp = require('sharp');
 
 
 const CLOUD_BUCKET = config.gcloud.bucket;
@@ -43,13 +44,12 @@ function sendUploadToGCS(req, res, next) {
     }
 
 
-
     const filename = path.basename(req.file.originalname, path.extname(req.file.originalname))
     const gcsname = Date.now() + filename;
 
     const images = [
         {
-            name: "orig",
+            name: "",
         },
         {
             name: "sm",
@@ -65,11 +65,15 @@ function sendUploadToGCS(req, res, next) {
         },
     ]
 
-    images.forEach(img => {
-        var imageName = gcsname + '-' + img.name;
-        const file = bucket.file(imageName);
+    let finishCount = 0;
 
-        const stream = file.createWriteStream({
+    images.forEach(img => {
+        let imageName = gcsname + '-' + img.name;
+        let file = bucket.file(imageName);
+
+
+
+        let stream = file.createWriteStream({
             metadata: {
                 contentType: req.file.mimetype
             }
@@ -81,15 +85,28 @@ function sendUploadToGCS(req, res, next) {
         });
 
         stream.on('finish', () => {
-            req.file.cloudStorageObject = gcsname;
-            file.makePublic().then(() => {
-                req.file.cloudStoragePublicUrl = getPublicUrl(imageName);
+            finishCount += 1;
+            if (finishCount === 1) {
+                req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
                 console.log(req.file.cloudStoragePublicUrl);
                 next();
-            });
+            }
+            file.makePublic();
         });
 
-        stream.end(req.file.buffer);
+
+        if (img.size) {
+            sharp(req.file.buffer)
+                .resize(img.size[0], img.size[1])
+                .toBuffer()
+                .then(function (outputBuffer) {
+                    stream.end(outputBuffer);
+                });
+        }
+        else {
+            stream.end(req.file.buffer);
+        }
+
     });
     /*
     const file = bucket.file(gcsname);
