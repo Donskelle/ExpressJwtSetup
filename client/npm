@@ -1,1 +1,0 @@
-Batchvorgang abbrechen (J/N)? 

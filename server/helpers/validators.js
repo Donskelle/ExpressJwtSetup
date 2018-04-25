@@ -15,13 +15,15 @@ module.exports = {
   },
 
   schemas: {
+
     authSchema: Joi.object().keys({
       email: Joi.string().email().trim().required(),
       password: Joi.string().required()
     }),
+
     signupSchema: Joi.object().keys({
       email: Joi.string().email().trim().required(),
-      password: Joi.string().required(),
+      password: Joi.string().required().min(6),
       first_name: Joi.string().trim().required(),
       last_name: Joi.string().trim().required(),
       birth_year: Joi.number().greater(1900).max((new Date()).getFullYear()-16).required(),
@@ -39,9 +41,11 @@ module.exports = {
         }), 
       }),
     }),
+
     emailAvailableSchema: Joi.object().keys({
       email: Joi.string().email().trim().required()
     }),
+    
     updateUserSchema: Joi.object().keys({
       first_name: Joi.string().trim(),
       last_name: Joi.string().trim(),
@@ -60,6 +64,15 @@ module.exports = {
           zip: Joi.string().min(5).max(5),
         }), 
       }),
+    }),
+
+    replacePassword: Joi.object().keys({
+      password: Joi.string().min(6).required(),
+      token: Joi.string().required(),
+    }),
+    
+    resetPassword: Joi.object().keys({
+      email: Joi.string().email().required(),
     }),
   }
 }

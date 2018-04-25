@@ -127,11 +127,11 @@ const multer = Multer({
     },
     limits: {
         fileSize: 5 * 1024 * 1024 // no larger than 10mb
-    }
+    },
 });
 
 module.exports = {
     getPublicUrl,
     sendUploadToGCS,
-    multer
+    multer,
 };

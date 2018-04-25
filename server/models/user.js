@@ -21,6 +21,8 @@ const userSchema = new Schema({
       type: String,
       lowercase: true,
     },
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   facebook: {
     id: {
@@ -96,7 +98,7 @@ userSchema.methods.isValidPassword = async function (newPassword) {
     throw new Error(error);
   }
 }
-userSchema.methods.createHash = async function (newPassword) {
+userSchema.methods.createHashedPassword = async function () {
   try {
     if (this.method == 'local') {
       // Generate a salt
@@ -110,7 +112,6 @@ userSchema.methods.createHash = async function (newPassword) {
     next(error);
   }
 }
-
 
 userSchema.options.toJSON = {
   transform: function (doc, ret, options) {

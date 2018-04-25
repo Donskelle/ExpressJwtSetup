@@ -13,10 +13,12 @@
   "license": "",
   "dependencies": {
     "@google-cloud/storage": "^1.6.0",
+    "@sendgrid/mail": "^6.2.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "concurrently": "^3.5.1",
     "cross-env": "^5.0.5",
+    "crypto": "^1.0.1",
     "express": "^4.15.3",
     "express-promise-router": "^2.0.0",
     "joi": "^10.6.0",

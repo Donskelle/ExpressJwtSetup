@@ -3,6 +3,7 @@ import React from 'react';
 import Avatar from 'material-ui/Avatar';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
+import { isOwnSource } from './../../utils/helper';
 
 
 
@@ -10,23 +11,26 @@ import { withStyles } from 'material-ui/styles';
 const styles = {
     classes: {
         bigAvatar: {
-            width: 60,
-            height: 60,
+            width: 120,
+            height: 120,
         },
     },
 };
 
 function Profil(props) {
-    console.log(props);
     const { classes, user } = props;
     let fullName = user.first_name + ' ' + user.last_name;
 
     let image = '';
     if (props.user.image) {
+        if(isOwnSource(props.user.image)) {
+            props.user.image += '-sm';
+        }
+        
         image = <Avatar
             alt={props.user.first_name}
-            src={props.user.image + "-sm"}
-            className={classNames(classes.avatar, classes.bigAvatar)}
+            src={props.user.image}
+            className={classNames(classes.bigAvatar)}
         />
     }
     else {
@@ -46,4 +50,4 @@ function Profil(props) {
 }
 
 
-export default withStyles(styles)(Profil);
+export default withStyles(styles.classes)(Profil);

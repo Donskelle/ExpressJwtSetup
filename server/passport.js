@@ -2,7 +2,6 @@ const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const { ExtractJwt } = require('passport-jwt');
 const LocalStrategy = require('passport-local').Strategy;
-const GooglePlusTokenStrategy = require('passport-google-plus-token');
 const FacebookTokenStrategy = require('passport-facebook-token');
 const config = require('./configuration');
 const User = require('./models/user');
@@ -35,11 +34,6 @@ passport.use('googleToken', new GooglePlusTokenStrategy({
   clientSecret: config.oauth.google.clientSecret
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    // Should have full user profile over here
-    console.log('profile', profile);
-    console.log('accessToken', accessToken);
-    console.log('refreshToken', refreshToken);
-
     const existingUser = await User.findOne({ "google.id": profile.id });
     if (existingUser) {
       return done(null, existingUser);
@@ -67,11 +61,6 @@ passport.use('facebookToken', new FacebookTokenStrategy({
   scope: ["user_about_me",],
 }, async (accessToken, refreshToken, profile, done) => {
   try {
-    console.log('profile', profile);
-    console.log('profile_json', profile._json);
-    console.log('accessToken', accessToken);
-    console.log('refreshToken', refreshToken);
-
     const existingUser = await User.findOne({ "facebook.id": profile.id });
     if (existingUser) {
       return done(null, existingUser);

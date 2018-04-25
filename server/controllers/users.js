@@ -1,6 +1,10 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/user');
 const { JWT_SECRET } = require('../configuration');
+const { mail } = require('../helpers/mail');
+var crypto = require('crypto');
+
+
 
 signToken = user => {
   return JWT.sign({
@@ -18,9 +22,8 @@ module.exports = {
     // Check if there is a user with the same email
     const foundUser = await User.findOne({ 'local.email': email });
     if (foundUser) {
-      return res.status(403).json({ error: 'E-Mail is already in use' });
+      return res.status(400).json({ status: false, error: 'E-Mail is already in use' });
     }
-      
 
     // Create a new user
     const newUser = new User({
@@ -36,17 +39,16 @@ module.exports = {
     });
 
     try {
-      await newUser.createHash();
+      await newUser.createHashedPassword();
       await newUser.save();
     } catch (error) {
-      res.status(400).json(error);
+      res.status(400).json({ status: false, error });
       next()
     }
-
     // Generate the token
     const token = signToken(newUser);
-    const responseUser  = newUser.toJSON();
-    
+    const responseUser = newUser.toJSON();
+
     // Respond with token
     res.status(200).json({ token, user: responseUser });
   },
@@ -86,9 +88,8 @@ module.exports = {
     res.json(req.user.toJSON());
   },
   updateUser: async (req, res, next) => {
-    console.log(req.body);
     req.user.set(req.body);
-    if(req.file && req.file.cloudStoragePublicUrl)
+    if (req.file && req.file.cloudStoragePublicUrl)
       req.user.image = req.file.cloudStoragePublicUrl;
 
     req.user.save(function (err) {
@@ -96,6 +97,53 @@ module.exports = {
 
       res.json(req.user.toJSON());
     });
-    
+  },
+
+  replacePassword: async (req, res, next) => {
+    User.findOne({ 'local.resetPasswordToken': req.body.token, 'local.resetPasswordExpires': { $gt: Date.now() } }, async function (err, user) {
+      if (!user) {
+        return res.status(400).json({ error: "Benutzer nicht gefunden." });
+      }
+      user.local.password = req.body.password;
+      user.local.resetPasswordToken = undefined;
+      user.local.resetPasswordExpires = undefined;
+
+      try {
+        user.createHashedPassword();
+        await user.save();
+      } catch (error) {
+        res.status(400).json({ status: false, error });
+        next();
+      }
+      const token = signToken(user);
+      const responseUser = user.toJSON();
+
+      res.status(200).json({ token, user: responseUser });
+    });
+  },
+
+  resetPassword: async (req, res, next) => {
+    User.findOne({ 'local.email': req.body.email }, function (err, user) {
+      if (!user) {
+        return res.status(400).json({ error: "Benutzer nicht gefunden." });
+      }
+      const token = crypto.randomBytes(20).toString('hex');
+      user.local.resetPasswordToken = token;
+      user.local.resetPasswordExpires = Date.now() + 3600000;
+
+      user.save(function (error, user) {
+        if (error) return res.status(400).json({ error });
+
+        const msg = {
+          to: req.body.email,
+          from: 'info@transportiert.de',
+          subject: 'Passwort zurücksetzten',
+          text: `http://localhost:3000/PasswortVergessen/${token} Token ${token}`,
+        };
+        mail.send(msg);
+
+        res.status(200).json({ message: "Eine Mail zur Wiederherstellung des Passworts ist unterwegs." });
+      });
+    });
   },
 }

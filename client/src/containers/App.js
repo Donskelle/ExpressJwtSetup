@@ -9,31 +9,17 @@ import { clearStorage, getStorage, setStorage } from './../utils/request.js'
 import LoadingComponent from './../components/LoadingComponent';
 import Nav from './../components/Nav';
 
+import AsyncHome from './Home/';
+import AsyncImpressum from './Impressum/';
+import AsyncRegistrieren from './Registrieren/';
+import AsyncProfil from './Profil/';
+import {AsyncPasswortVergessen, AsyncPasswortReset} from './PasswortVergessen/';
+
+
 const AsyncUserNav = Loadable({
   loader: () => import("./../components/UserNav"),
   loading: LoadingComponent
 });
-
-const AsyncHome = Loadable({
-  loader: () => import("./Home"),
-  loading: LoadingComponent
-});
-
-const AsyncImpressum = Loadable({
-  loader: () => import("./Impressum"),
-  loading: LoadingComponent
-});
-
-const AsyncRegistrieren = Loadable({
-  loader: () => import("./Registrieren"),
-  loading: LoadingComponent
-});
-
-const AsyncProfil = Loadable({
-  loader: () => import("./Profil"),
-  loading: LoadingComponent
-});
-
 
 class App extends Component {
   constructor(props) {
@@ -77,15 +63,35 @@ class App extends Component {
           <AsyncUserNav user={this.state.user} handleLogout={this.handleLogout} handleLogin={this.handleLogin} />
           <Switch>
             <Route exact path='/' component={AsyncHome} />
-            <Route exact path='/Impressum' component={AsyncImpressum} />
+
+
             <Route exact path='/Registrieren'
               render={
                 () => {
                   return this.state.user === null
-                  ? <AsyncRegistrieren handleLogin={this.handleLogin} />
-                  : <Redirect to='/Profil' />
+                    ? <AsyncRegistrieren handleLogin={this.handleLogin} />
+                    : <Redirect to='/Profil' />
                 }
               } />
+
+            <Route exact path='/PasswortVergessen'
+              render={
+                () => {
+                  return this.state.user === null
+                    ? <AsyncPasswortVergessen/>
+                    : <Redirect to='/Profil' />
+                }
+              } />
+
+            <Route exact path='/PasswortVergessen/:token'
+              render={
+                (props) => {
+                  return this.state.user === null
+                    ? <AsyncPasswortReset {...props} handleLogin={this.handleLogin} />
+                    : <Redirect to='/Profil' />
+                }
+              } />
+
             <Route exact path='/Profil'
               render={() => {
                 return this.state.user === null
@@ -93,9 +99,12 @@ class App extends Component {
                   : <AsyncProfil user={this.state.user} />
               }}
             />
+
+            <Route exact path='/Impressum' component={AsyncImpressum} />
             <Route render={function () {
               return <p>Not Found</p>
             }} />
+
           </Switch>
         </div>
       </BrowserRouter>
@@ -104,14 +113,5 @@ class App extends Component {
 
 
 }
-
-function PrivateRoute({ component: Component, ...rest }) {
-  return (<Route {...rest} render={(props) => (
-    props.user === null
-      ? <Redirect to='/' />
-      : <Component {...props} />
-  )} />)
-}
-
 
 export default App;

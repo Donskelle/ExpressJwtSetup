@@ -56,34 +56,24 @@ class Registrieren extends Component {
     }
 
 
-    // check if email is valid
-    /*handleInputChangeEmail(event) {
-        const { name, value } = event.target;
-
-        this.setState({
-            [name]: value
-        });
-    }*/
-
     handleSubmit(e) {
         e.preventDefault();
         this.setState({ submited: true });
 
         let { repeatPassword, birth_year, ...formDataClear } = this.state.formData;
-        
+
         formDataClear.birth_year = parseInt(birth_year);
 
         axios.post('/api/v1/users/', formDataClear)
             .then((response) => {
+                this.setState({ submited: false });
                 this.props.history.push("/");
                 this.props.handleLogin(response);
             })
             .catch(function (error) {
+                this.setState({ submited: false });
                 console.log(error);
             })
-            .finally(() => {
-                this.setState({ submited: false });
-            });
     }
 
     render() {

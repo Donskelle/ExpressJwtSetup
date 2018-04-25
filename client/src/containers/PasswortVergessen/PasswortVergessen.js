@@ -3,19 +3,14 @@ import axios from 'axios';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Button } from 'material-ui';
-import { NavLink } from 'react-router-dom';
 
-
-class LoginForm extends Component {
+class PasswortVergessen extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      formData: {
-        email: '',
-        password: '',
-      },
+      email: '',
       submitted: false,
     };
 
@@ -24,29 +19,32 @@ class LoginForm extends Component {
   }
 
   handleChange(event) {
-    const { formData } = this.state;
-    formData[event.target.name] = event.target.value;
-    this.setState({ formData });
+    this.setState({ email: event.target.value });
   }
 
   handleSubmit() {
     this.setState({ submitted: true }, () => {
-      axios.post('api/v1/users/signin/', this.state.formData)
+      axios.post('api/v1/users/forgot/', { email: this.state.email })
         .then((response) => {
-          this.setState({ submitted: false })
-          this.props.handleLogin(response)
+          console.log(response);
+          alert(response.data.message);
+          this.setState({
+            email: '',
+            submitted: false,
+          });
         })
         .catch((error) => {
-          this.setState({ submitted: false })
-          if (error.response.status === 401) {
-            alert("Falsche Logindaten");
+          console.log(error);
+          this.setState({ submitted: false });
+          if (error.response.status === 400) {
+            alert(error.response.data.error);
           }
         })
     });
   }
 
   render() {
-    const { formData, submitted } = this.state;
+    const { email, submitted } = this.state;
     return (
       <ValidatorForm
         ref="form"
@@ -57,19 +55,9 @@ class LoginForm extends Component {
           label="Email"
           onChange={this.handleChange}
           name="email"
-          value={formData.email}
+          value={email}
           validators={['required', 'isEmail']}
           errorMessages={['Dieses Feld ist benötigt.', 'Ungültige E-Mail']}
-        />
-        <br />
-        <TextValidator
-          label="Password"
-          onChange={this.handleChange}
-          name="password"
-          type="password"
-          value={formData.password}
-          validators={['required', 'minStringLength:6']}
-          errorMessages={['Dieses Feld ist benötigt.', 'Password hat mindestens 6 Buchstaben.']}
         />
         <br />
         <Button
@@ -83,11 +71,10 @@ class LoginForm extends Component {
             || (!submitted && 'Absenden')
           }
         </Button>
-        <NavLink activeClassName='active' to='/PasswortVergessen'>Passwort Vergessen?</NavLink>
       </ValidatorForm>
     );
   }
 }
 
 
-export default LoginForm;
+export default PasswortVergessen;
