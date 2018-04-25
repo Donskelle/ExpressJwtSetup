@@ -1,6 +1,6 @@
 const JWT = require('jsonwebtoken');
 const User = require('../models/user');
-const { JWT_SECRET } = require('../configuration');
+const { JWT_SECRET, URL } = require('../configuration');
 const { mail } = require('../helpers/mail');
 var crypto = require('crypto');
 
@@ -22,7 +22,7 @@ module.exports = {
     // Check if there is a user with the same email
     const foundUser = await User.findOne({ 'local.email': email });
     if (foundUser) {
-      return res.status(400).json({ status: false, error: 'E-Mail is already in use' });
+      return res.status(400).json({ error: 'Email ist bereits registriert.' });
     }
 
     // Create a new user
@@ -109,7 +109,7 @@ module.exports = {
       user.local.resetPasswordExpires = undefined;
 
       try {
-        user.createHashedPassword();
+        await user.createHashedPassword();
         await user.save();
       } catch (error) {
         res.status(400).json({ status: false, error });
@@ -136,9 +136,9 @@ module.exports = {
 
         const msg = {
           to: req.body.email,
-          from: 'info@transportiert.de',
+          from: 'noreply@transportiert.de',
           subject: 'Passwort zurücksetzten',
-          text: `http://localhost:3000/PasswortVergessen/${token} Token ${token}`,
+          text: `${URL}PasswortVergessen/${token} Token ${token}`,
         };
         mail.send(msg);
 

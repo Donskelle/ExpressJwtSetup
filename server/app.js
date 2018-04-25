@@ -8,17 +8,11 @@ const config = require('./configuration/')
 
 mongoose.Promise = global.Promise;
 
-if (process.env.NODE_ENV === 'test') {
-  mongoose.connect('mongodb://localhost/demoapp', {
-    reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 5000,
-  });
-} else {
-  mongoose.connect(config.mongo.url, {
-    reconnectTries: Number.MAX_VALUE,
-    reconnectInterval: 5000,
-  });
-}
+
+mongoose.connect(config.mongo.url, {
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 5000,
+});
 
 const app = express();
 
