@@ -73,7 +73,7 @@ class Registrieren extends Component {
         
         formDataClear.birth_year = parseInt(birth_year);
 
-        axios.post('/api/users/', formDataClear)
+        axios.post('/api/v1/users/', formDataClear)
             .then((response) => {
                 this.props.history.push("/");
                 this.props.handleLogin(response);

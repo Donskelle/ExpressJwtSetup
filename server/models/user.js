@@ -10,20 +10,11 @@ const Schema = mongoose.Schema;
 const userSchema = new Schema({
   method: {
     type: String,
-    enum: ['local', 'google', 'facebook'],
+    enum: ['local', 'facebook'],
     required: true,
   },
   local: {
     password: {
-      type: String,
-    },
-    email: {
-      type: String,
-      lowercase: true,
-    },
-  },
-  google: {
-    id: {
       type: String,
     },
     email: {
@@ -97,29 +88,26 @@ userSchema.virtual('fullName').
   get(function () { return this.first_name + ' ' + this.last_name; });
 
 
-userSchema.pre('save', async function (next) {
-  try {
-    if (this.method !== 'local') {
-      next();
-    }
-
-    // Generate a salt
-    const salt = await bcrypt.genSalt(10);
-    // Generate a password hash (salt + hash)
-    const passwordHash = await bcrypt.hash(this.local.password, salt);
-    // Re-assign hashed version over original, plain text password
-    this.local.password = passwordHash;
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
 
 userSchema.methods.isValidPassword = async function (newPassword) {
   try {
     return await bcrypt.compare(newPassword, this.local.password);
   } catch (error) {
     throw new Error(error);
+  }
+}
+userSchema.methods.createHash = async function (newPassword) {
+  try {
+    if (this.method == 'local') {
+      // Generate a salt
+      const salt = await bcrypt.genSalt(10);
+      // Generate a password hash (salt + hash)
+      const passwordHash = await bcrypt.hash(this.local.password, salt);
+      // Re-assign hashed version over original, plain text password
+      this.local.password = passwordHash;
+    }
+  } catch (error) {
+    next(error);
   }
 }
 

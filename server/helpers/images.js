@@ -42,14 +42,16 @@ function sendUploadToGCS(req, res, next) {
         console.log("no file");
         return next();
     }
+    const { file } = req;
 
 
-    const filename = path.basename(req.file.originalname, path.extname(req.file.originalname))
+
+    const filename = path.basename(file.originalname, path.extname(file.originalname))
     const gcsname = Date.now() + filename;
 
     const images = [
         {
-            name: "",
+            name: "orig",
         },
         {
             name: "sm",
@@ -65,76 +67,52 @@ function sendUploadToGCS(req, res, next) {
         },
     ]
 
-    let finishCount = 0;
 
     images.forEach(img => {
         let imageName = gcsname + '-' + img.name;
-        let file = bucket.file(imageName);
+        let bucketFile = bucket.file(imageName);
 
-
-
-        let stream = file.createWriteStream({
+        let stream = bucketFile.createWriteStream({
             metadata: {
-                contentType: req.file.mimetype
+                contentType: file.mimetype
             }
         });
 
         stream.on('error', (err) => {
-            req.file.cloudStorageError = err;
+            console.log(err)
             next(err);
         });
 
+
         stream.on('finish', () => {
-            finishCount += 1;
-            if (finishCount === 1) {
-                req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
-                console.log(req.file.cloudStoragePublicUrl);
-                next();
-            }
-            file.makePublic();
+            bucketFile.makePublic();
         });
 
 
         if (img.size) {
-            sharp(req.file.buffer)
+            sharp(file.buffer)
                 .resize(img.size[0], img.size[1])
                 .toBuffer()
                 .then(function (outputBuffer) {
                     stream.end(outputBuffer);
-                });
+                })
+                .catch(e => {
+                    console.log(e);
+                })
         }
         else {
-            stream.end(req.file.buffer);
+            stream.end(file.buffer);
         }
 
     });
-    /*
-    const file = bucket.file(gcsname);
-    const fileSmall = bucket.file(gcsname + "-sm");
-    const fileMedium = bucket.file(gcsname + "-md");
-    const fileLarge = bucket.file(gcsname + "-lg");
 
-    const stream = file.createWriteStream({
-        metadata: {
-            contentType: req.file.mimetype
-        }
-    });
-
-    stream.on('error', (err) => {
-        req.file.cloudStorageError = err;
-        next(err);
-    });
-
-    stream.on('finish', () => {
-        req.file.cloudStorageObject = gcsname;
-        file.makePublic().then(() => {
-            req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
-            console.log(req.file.cloudStoragePublicUrl);
-            next();
-        });
-    });
-
-    stream.end(req.file.buffer);*/
+    file.cloudStoragePublicUrl = getPublicUrl(gcsname);
+    console.log(req.file.cloudStoragePublicUrl);
+    /**
+     * Calling next before upload would be better
+     * but if we do so, image is not available after respone
+     */
+    next();
 }
 
 const Multer = require('multer');

@@ -17,19 +17,20 @@ const styles = {
 };
 
 function Profil(props) {
-    const { classes } = props;
-    let fullName = props.user.first_name + ' ' + props.user.last_name;
+    console.log(props);
+    const { classes, user } = props;
+    let fullName = user.first_name + ' ' + user.last_name;
 
     let image = '';
     if (props.user.image) {
         image = <Avatar
             alt={props.user.first_name}
-            src={props.user.image}
+            src={props.user.image + "-sm"}
             className={classNames(classes.avatar, classes.bigAvatar)}
         />
     }
     else {
-        const name = props.user.first_name.substring(0, 2);
+        const name = user.first_name.substring(0, 1) + user.last_name.substring(0, 1);
         image = <Avatar
             className={classNames(classes.bigAvatar)}
         >{name}</Avatar>

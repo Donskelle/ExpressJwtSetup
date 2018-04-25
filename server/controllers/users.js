@@ -18,8 +18,9 @@ module.exports = {
     // Check if there is a user with the same email
     const foundUser = await User.findOne({ 'local.email': email });
     if (foundUser) {
-      return res.status(403).json({ error: 'Email is already in use' });
+      return res.status(403).json({ error: 'E-Mail is already in use' });
     }
+      
 
     // Create a new user
     const newUser = new User({
@@ -35,6 +36,7 @@ module.exports = {
     });
 
     try {
+      await newUser.createHash();
       await newUser.save();
     } catch (error) {
       res.status(400).json(error);
@@ -43,7 +45,8 @@ module.exports = {
 
     // Generate the token
     const token = signToken(newUser);
-    const { local, ...responseUser } = newUser.toObject({ virtuals: true });
+    const responseUser  = newUser.toJSON();
+    
     // Respond with token
     res.status(200).json({ token, user: responseUser });
   },
@@ -51,8 +54,8 @@ module.exports = {
   signIn: async (req, res, next) => {
     // Generate token
     const token = signToken(req.user);
-    const { local, ...responseUser } = req.user;
-    res.status(200).json({ token, user: responseUser });
+    const user = req.user.toJSON();
+    res.status(200).json({ token, user });
   },
 
   emailAvailable: async (req, res, next) => {
@@ -83,8 +86,16 @@ module.exports = {
     res.json(req.user.toJSON());
   },
   updateUser: async (req, res, next) => {
+    console.log(req.body);
     req.user.set(req.body);
-    req.user.save();
-    res.json(req.user.toJSON());
+    if(req.file && req.file.cloudStoragePublicUrl)
+      req.user.image = req.file.cloudStoragePublicUrl;
+
+    req.user.save(function (err) {
+      if (err) return res.status(400).json(error);
+
+      res.json(req.user.toJSON());
+    });
+    
   },
 }

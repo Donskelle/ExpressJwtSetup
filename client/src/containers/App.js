@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
 
 import Loadable from 'react-loadable';
 import * as jwtDecode from 'jwt-decode';
@@ -9,15 +9,10 @@ import { clearStorage, getStorage, setStorage } from './../utils/request.js'
 import LoadingComponent from './../components/LoadingComponent';
 import Nav from './../components/Nav';
 
-import ReactJoiValidations from 'react-joi-validation';
-import Joi from 'joi-browser';
-ReactJoiValidations.setJoi(Joi);
-
 const AsyncUserNav = Loadable({
   loader: () => import("./../components/UserNav"),
   loading: LoadingComponent
 });
-
 
 const AsyncHome = Loadable({
   loader: () => import("./Home"),
@@ -83,8 +78,21 @@ class App extends Component {
           <Switch>
             <Route exact path='/' component={AsyncHome} />
             <Route exact path='/Impressum' component={AsyncImpressum} />
-            <Route exact path='/Registrieren' render={() => <AsyncRegistrieren handleLogin={this.handleLogin} />} />
-            <Route exact path='/Profil' render={() => <AsyncProfil user={this.state.user} />} />
+            <Route exact path='/Registrieren'
+              render={
+                () => {
+                  return this.state.user === null
+                  ? <AsyncRegistrieren handleLogin={this.handleLogin} />
+                  : <Redirect to='/Profil' />
+                }
+              } />
+            <Route exact path='/Profil'
+              render={() => {
+                return this.state.user === null
+                  ? <Redirect to='/Register' />
+                  : <AsyncProfil user={this.state.user} />
+              }}
+            />
             <Route render={function () {
               return <p>Not Found</p>
             }} />
@@ -93,8 +101,17 @@ class App extends Component {
       </BrowserRouter>
     );
   }
+
+
 }
 
+function PrivateRoute({ component: Component, ...rest }) {
+  return (<Route {...rest} render={(props) => (
+    props.user === null
+      ? <Redirect to='/' />
+      : <Component {...props} />
+  )} />)
+}
 
 
 export default App;

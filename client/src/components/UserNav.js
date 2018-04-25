@@ -24,7 +24,7 @@ class UserNav extends Component {
 
     responseFacebook(fbRes) {
         if (fbRes.status !== 'unknown' || fbRes.status !== 'not_authorized') {
-            axios.post('api/users/oauth/facebook', { 'access_token': fbRes.accessToken })
+            axios.post('api/v1/users/oauth/facebook', { 'access_token': fbRes.accessToken })
                 .then((response) => {
                     console.log(response);
                     this.props.handleLogin(response);
@@ -50,7 +50,7 @@ class UserNav extends Component {
                     fields="id,name,first_name,last_name,gender,birthday,picture,email"
                     scope="email,user_birthday,public_profile"
                     callback={this.responseFacebook} />
-                <LoginForm handleLogin={this.props.handleLogin}/>
+                <LoginForm handleLogin={this.props.handleLogin} />
                 <NavLink to='/Registrieren'>Registrieren</NavLink>
             </div >
         );

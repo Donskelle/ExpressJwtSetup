@@ -78,19 +78,17 @@ class LoginForm extends Component {
 
   handleSubmit() {
     this.setState({ submitted: true }, () => {
-      axios.post('api/users/signin/', this.state.formData)
-      .then(function (response) {
-        this.props.handleLogin(response)
-      })
-      .catch(function (error) {
-        if(error.response.status === 401) {
-          alert("Falsche Logindaten");
-        }
-        console.log(error);
-      })
-      .finally(() => {
-        this.setState({ submitted: false })
-      }) 
+      axios.post('api/v1/users/signin/', this.state.formData)
+        .then((response) => {
+          this.setState({ submitted: false })
+          this.props.handleLogin(response)
+        })
+        .catch((error) => {
+          this.setState({ submitted: false })
+          if (error.response.status === 401) {
+            alert("Falsche Logindaten");
+          }
+        })
     });
   }
 
