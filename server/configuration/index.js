@@ -1,7 +1,6 @@
 
 if (process.env.NODE_ENV === 'test') {
   module.exports = {
-    API_URL: 'http://localhost:3000/api/v1/',
     URL: 'http://localhost:3000/',
     JWT_SECRET: 'gagaaabfbsergagsagsgew',
     SENDGRID_API_KEY: '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',
@@ -21,7 +20,7 @@ if (process.env.NODE_ENV === 'test') {
   };
 } else {
   module.exports = {
-    API_URL: '',
+    URL: 'http://demotransportiert.appspot.com/',
     JWT_SECRET: 'gagaaabfbsergagsagsgew',
     SENDGRID_API_KEY: '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',
     mongo: {

@@ -14,11 +14,13 @@
 'use strict';
 
 const Storage = require('@google-cloud/storage');
-const config = require('../configuration');
+const config = require('./../configuration');
+const image = require('./../configuration/image');
 const path = require('path');
 const sharp = require('sharp');
 
-
+console.log(image);
+console.log(config);
 const CLOUD_BUCKET = config.gcloud.bucket;
 
 const storage = Storage({
@@ -31,6 +33,31 @@ const bucket = storage.bucket(CLOUD_BUCKET);
 // The object's ACL has to be set to public read.
 function getPublicUrl(filename) {
     return `https://storage.googleapis.com/${CLOUD_BUCKET}/${filename}`;
+}
+
+function isOwnSource(fileUrl) {
+    if (fileUrl && fileUrl.indexOf(`https://storage.googleapis.com/${CLOUD_BUCKET}`) >= 0) {
+        return true;
+    }
+    return false;
+}
+
+async function deleteImage(fileUrl) {
+    if (isOwnSource(fileUrl)) {
+        let filename = fileUrl.replace(/^.*[\\\/]/, '');
+
+        image.sizes.forEach(img => {
+            bucket
+                .file(filename + "-" + img.name)
+                .delete()
+                .then(() => {
+                    console.log(`gs://${CLOUD_BUCKET}/${filename + "-" + img.name} deleted.`);
+                })
+                .catch(err => {
+                    console.log(`gs://${CLOUD_BUCKET}/${filename + "-" + img.name} error.`, err);
+                });
+        });
+    }
 }
 
 // Express middleware that will automatically pass uploads to Cloud Storage.
@@ -49,26 +76,7 @@ function sendUploadToGCS(req, res, next) {
     const filename = path.basename(file.originalname, path.extname(file.originalname))
     const gcsname = Date.now() + filename;
 
-    const images = [
-        {
-            name: "orig",
-        },
-        {
-            name: "sm",
-            size: [200, 200],
-        },
-        {
-            name: "md",
-            size: [600, 600],
-        },
-        {
-            name: "lg",
-            size: [1200, 800],
-        },
-    ]
-
-
-    images.forEach(img => {
+    image.sizes.forEach(img => {
         let imageName = gcsname + '-' + img.name;
         let bucketFile = bucket.file(imageName);
 
@@ -80,12 +88,17 @@ function sendUploadToGCS(req, res, next) {
 
         stream.on('error', (err) => {
             console.log(err)
-            next(err);
+            //next(err);
         });
 
 
         stream.on('finish', () => {
-            bucketFile.makePublic();
+            try {
+                bucketFile.makePublic()
+            }
+            catch(error) {
+                console.log(error)
+            }
         });
 
 
@@ -134,4 +147,5 @@ module.exports = {
     getPublicUrl,
     sendUploadToGCS,
     multer,
+    deleteImage
 };

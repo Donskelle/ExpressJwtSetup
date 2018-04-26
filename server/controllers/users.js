@@ -2,6 +2,7 @@ const JWT = require('jsonwebtoken');
 const User = require('../models/user');
 const { JWT_SECRET, URL } = require('../configuration');
 const { mail } = require('../helpers/mail');
+const { deleteImage } = require('../helpers/images');
 var crypto = require('crypto');
 
 
@@ -87,10 +88,22 @@ module.exports = {
   getOwnUser: async (req, res, next) => {
     res.json(req.user.toJSON());
   },
+
   updateUser: async (req, res, next) => {
+    // deleteOldImage if new image will be set via api
+    if(req.body.image)
+      deleteImage(req.user.image)
+
     req.user.set(req.body);
-    if (req.file && req.file.cloudStoragePublicUrl)
+
+
+    if (req.file && req.file.cloudStoragePublicUrl) {
+      // deleteOldImage if new image will be set via upload
+      deleteImage(req.user.image)
+      
+      // set new Image
       req.user.image = req.file.cloudStoragePublicUrl;
+    }
 
     req.user.save(function (err) {
       if (err) return res.status(400).json(error);
@@ -139,6 +152,31 @@ module.exports = {
           from: 'noreply@transportiert.de',
           subject: 'Passwort zurücksetzten',
           text: `${URL}PasswortVergessen/${token} Token ${token}`,
+        }; s
+        mail.send(msg);
+
+        res.status(200).json({ message: "Eine Mail zur Wiederherstellung des Passworts ist unterwegs." });
+      });
+    });
+  },
+
+  resetPassword: async (req, res, next) => {
+    User.findOne({ 'local.email': req.body.email }, function (err, user) {
+      if (!user) {
+        return res.status(400).json({ error: "Benutzer nicht gefunden." });
+      }
+      const token = crypto.randomBytes(20).toString('hex');
+      user.local.resetPasswordToken = token;
+      user.local.resetPasswordExpires = Date.now() + 3600000;
+
+      user.save(function (error) {
+        if (error) return res.status(400).json({ error });
+
+        const msg = {
+          to: req.body.email,
+          from: 'noreply@transportiert.de',
+          subject: 'Passwort zurücksetzten',
+          text: `${URL}PasswortVergessen/${token} Token ${token}`,
         };
         mail.send(msg);
 
@@ -146,4 +184,16 @@ module.exports = {
       });
     });
   },
+
+  delete: async (req, res, next) => {
+    console.log(req.user)
+    deleteImage(req.user.image);
+
+    req.user.deleteUserData();
+    req.user.save(function (error) {
+      if (error) return res.status(400).json({ error });
+
+      res.status(200).json({ message: "Benutzer erfolgreich gelöscht." });
+    });
+  }
 }

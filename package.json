@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node server/index.js",
+    "preinstall": "cd client && npm install && npm run build",
     "server-dev": "cross-env NODE_ENV=test nodemon server/index.js",
     "client-dev": "npm start --prefix client",
     "start-dev": "concurrently \"cd client &&  npm start\" \"npm run server-dev\""

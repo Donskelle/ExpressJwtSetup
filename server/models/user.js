@@ -11,7 +11,6 @@ const userSchema = new Schema({
   method: {
     type: String,
     enum: ['local', 'facebook'],
-    required: true,
   },
   local: {
     password: {
@@ -36,7 +35,6 @@ const userSchema = new Schema({
   gender: {
     type: String,
     enum: ['Herr', 'Frau'],
-    required: true,
   },
   first_name: {
     type: String,
@@ -58,7 +56,6 @@ const userSchema = new Schema({
   },
   birth_year: {
     type: Number,
-    required: true,
   },
   ustid: {
     type: String,
@@ -113,6 +110,33 @@ userSchema.methods.createHashedPassword = async function () {
   }
 }
 
+userSchema.methods.deleteUserData = async function () {
+  try {
+    if (this.method == 'local') {
+      this.local.password = undefined;
+      this.local.email = undefined;
+    }
+    else if(this.method == 'facebook') {
+      this.facebook.id = undefined;
+      this.facebook.email = undefined;
+    }
+    
+    this.first_name = 'Gelöschter';
+    this.last_name = 'Benutzer';
+    this.birth_year = undefined;
+    this.image = undefined;
+    this.ustid = undefined;
+    this.commercial = undefined;
+    this.phone = undefined;
+    this.insurance = undefined;
+    this.company = undefined;
+    this.gender = undefined;
+  } catch (error) {
+    next(error);
+  }
+}
+
+
 userSchema.options.toJSON = {
   transform: function (doc, ret, options) {
     ret.id = ret._id;
@@ -123,6 +147,8 @@ userSchema.options.toJSON = {
     return ret;
   }
 };
+
+
 
 // Create a model
 const User = mongoose.model('user', userSchema);

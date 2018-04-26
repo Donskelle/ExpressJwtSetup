@@ -14,7 +14,8 @@ const images = require('../helpers/images');
 router.route('/')
   .post(validateBody(schemas.signupSchema), UsersController.signUp)
   .get(passportJWT, UsersController.getOwnUser)
-  .put(passportJWT, images.multer.single('image'), validateBody(schemas.updateUserSchema), images.sendUploadToGCS, UsersController.updateUser);
+  .put(passportJWT, images.multer.single('image'), validateBody(schemas.updateUserSchema), images.sendUploadToGCS, UsersController.updateUser)
+  .delete(passportJWT, UsersController.delete);
 
 router.route('/forgot')
   .post(validateBody(schemas.resetPassword), UsersController.resetPassword)

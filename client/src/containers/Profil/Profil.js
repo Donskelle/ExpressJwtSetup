@@ -13,6 +13,7 @@ const styles = {
         bigAvatar: {
             width: 120,
             height: 120,
+            fontSize: 80,
         },
     },
 };
@@ -23,13 +24,14 @@ function Profil(props) {
 
     let image = '';
     if (props.user.image) {
+        let src = props.user.image;
         if(isOwnSource(props.user.image)) {
-            props.user.image += '-sm';
+            src += '-sm';
         }
         
         image = <Avatar
             alt={props.user.first_name}
-            src={props.user.image}
+            src={src}
             className={classNames(classes.bigAvatar)}
         />
     }
