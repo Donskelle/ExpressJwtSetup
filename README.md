@@ -11,7 +11,7 @@ Mongo DB läuft als Cluster in Frankfurt. Verbinde mit:
 ```
 URL: mongodb://demouser:<PASSWORD>@demotrans-shard-00-00-qdhwv.mongodb.net:27017,demotrans-shard-00-01-qdhwv.mongodb.net:27017,demotrans-shard-00-02-qdhwv.mongodb.net:27017/test?ssl=true&replicaSet=demotrans-shard-0&authSource=admin
 User: demouser
-Pw: RSD0yNk0kfujfsrs
+Pw: zyPgthlmoGmmuJed
 ```
 
 ### Images Store:
