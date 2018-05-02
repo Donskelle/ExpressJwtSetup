@@ -19,8 +19,6 @@ const image = require('./../configuration/image');
 const path = require('path');
 const sharp = require('sharp');
 
-console.log(image);
-console.log(config);
 const CLOUD_BUCKET = config.gcloud.bucket;
 
 const storage = Storage({
@@ -70,8 +68,6 @@ function sendUploadToGCS(req, res, next) {
         return next();
     }
     const { file } = req;
-
-
 
     const filename = path.basename(file.originalname, path.extname(file.originalname))
     const gcsname = Date.now() + filename;

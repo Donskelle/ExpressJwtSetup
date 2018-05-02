@@ -5,6 +5,7 @@ import FacebookLogin from 'react-facebook-login';
 
 
 import LoginForm from './../components/LoginForm';
+import config from './../config';
 
 
 
@@ -24,7 +25,23 @@ class UserNav extends Component {
 
     responseFacebook(fbRes) {
         if (fbRes.status !== 'unknown' || fbRes.status !== 'not_authorized') {
-            axios.post('api/v1/users/oauth/facebook', { 'access_token': fbRes.accessToken })
+            /*fetch(config.URL + 'api/v1/users/oauth/facebook', {
+                method: 'POST',
+                body: JSON.stringify({
+                    'access_token': fbRes.accessToken,
+                }),
+            })
+                .then(data => data.json())
+                .then((response) => {
+                    console.log(response);
+                    if(response.status === 200) {
+                        this.props.handleLogin(response);
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });*/
+            axios.post(`${config.URL}api/v1/users/oauth/facebook`, { 'access_token': fbRes.accessToken }, { headers: { 'cache-control': 'max-age=0' } })
                 .then((response) => {
                     console.log(response);
                     this.props.handleLogin(response);
@@ -47,7 +64,7 @@ class UserNav extends Component {
             <div>
                 <FacebookLogin
                     appId="102026413313755"
-                    fields="id,name,first_name,last_name,gender,birthday,picture,email"
+                    fields="id,first_name,last_name,gender,birthday,picture,email"
                     scope="email,user_birthday,public_profile"
                     callback={this.responseFacebook} />
                 <LoginForm handleLogin={this.props.handleLogin} />

@@ -4,6 +4,7 @@ import axios from 'axios';
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Button } from 'material-ui';
 import { NavLink } from 'react-router-dom';
+import config from './../config';
 
 
 class LoginForm extends Component {
@@ -31,7 +32,7 @@ class LoginForm extends Component {
 
   handleSubmit() {
     this.setState({ submitted: true }, () => {
-      axios.post('api/v1/users/signin/', this.state.formData)
+      axios.post(config.URL + 'api/v1/users/signin/', this.state.formData, { headers: { 'cache-control': 'max-age=0',  } })
         .then((response) => {
           this.setState({ submitted: false })
           this.props.handleLogin(response)

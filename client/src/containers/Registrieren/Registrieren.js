@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
+
+
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 import { Button } from 'material-ui';
 
 import { withRouter } from 'react-router-dom';
+import config from './../../config';
 
 
 import './registrieren.css';
@@ -64,13 +67,13 @@ class Registrieren extends Component {
 
         formDataClear.birth_year = parseInt(birth_year);
 
-        axios.post('/api/v1/users/', formDataClear)
+        axios.post(config.URL + 'api/v1/users/', formDataClear, { headers: { 'Cache-Control': 'no-cache' } })
             .then((response) => {
                 this.setState({ submited: false });
                 this.props.history.push("/");
                 this.props.handleLogin(response);
             })
-            .catch(function (error) {
+            .catch((error) => {
                 this.setState({ submited: false });
                 console.log(error);
             })

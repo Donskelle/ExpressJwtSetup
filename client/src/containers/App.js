@@ -9,11 +9,14 @@ import { clearStorage, getStorage, setStorage } from './../utils/request.js'
 import LoadingComponent from './../components/LoadingComponent';
 import Nav from './../components/Nav';
 
+
+import { Provider } from 'react-redux'
+
 import AsyncHome from './Home/';
 import AsyncImpressum from './Impressum/';
 import AsyncRegistrieren from './Registrieren/';
 import AsyncProfil from './Profil/';
-import {AsyncPasswortVergessen, AsyncPasswortReset} from './PasswortVergessen/';
+import { AsyncPasswortVergessen, AsyncPasswortReset } from './PasswortVergessen/';
 
 
 const AsyncUserNav = Loadable({
@@ -57,57 +60,59 @@ class App extends Component {
     const isLoggedIn = this.state.user ? true : false;
 
     return (
-      <BrowserRouter>
-        <div className='container'>
-          <Nav isLoggedIn={isLoggedIn} />
-          <AsyncUserNav user={this.state.user} handleLogout={this.handleLogout} handleLogin={this.handleLogin} />
-          <Switch>
-            <Route exact path='/' component={AsyncHome} />
+      <Provider store={this.props.store}>
+        <BrowserRouter>
+          <div className='container'>
+            <Nav isLoggedIn={isLoggedIn} />
+            <AsyncUserNav user={this.state.user} handleLogout={this.handleLogout} handleLogin={this.handleLogin} />
+            <Switch>
+              <Route exact path='/' component={AsyncHome} />
 
 
-            <Route exact path='/Registrieren'
-              render={
-                () => {
+              <Route exact path='/Registrieren'
+                render={
+                  () => {
+                    return this.state.user === null
+                      ? <AsyncRegistrieren handleLogin={this.handleLogin} />
+                      : <Redirect to='/Profil' />
+                  }
+                } />
+
+              <Route exact path='/PasswortVergessen'
+                render={
+                  () => {
+                    return this.state.user === null
+                      ? <AsyncPasswortVergessen />
+                      : <Redirect to='/Profil' />
+                  }
+                } />
+
+              <Route exact path='/PasswortVergessen/:token'
+                render={
+                  (props) => {
+                    return this.state.user === null
+                      ? <AsyncPasswortReset {...props} handleLogin={this.handleLogin} />
+                      : <Redirect to='/Profil' />
+                  }
+                } />
+
+              <Route exact path='/Profil'
+                render={() => {
                   return this.state.user === null
-                    ? <AsyncRegistrieren handleLogin={this.handleLogin} />
-                    : <Redirect to='/Profil' />
-                }
-              } />
+                    ? <Redirect to='/Register' />
+                    : <AsyncProfil user={this.state.user} />
+                }}
+              />
 
-            <Route exact path='/PasswortVergessen'
-              render={
-                () => {
-                  return this.state.user === null
-                    ? <AsyncPasswortVergessen/>
-                    : <Redirect to='/Profil' />
-                }
-              } />
+              <Route exact path='/Impressum' component={AsyncImpressum} />
+              <Route render={function () {
+                return <p>Not Found</p>
+              }} />
 
-            <Route exact path='/PasswortVergessen/:token'
-              render={
-                (props) => {
-                  return this.state.user === null
-                    ? <AsyncPasswortReset {...props} handleLogin={this.handleLogin} />
-                    : <Redirect to='/Profil' />
-                }
-              } />
-
-            <Route exact path='/Profil'
-              render={() => {
-                return this.state.user === null
-                  ? <Redirect to='/Register' />
-                  : <AsyncProfil user={this.state.user} />
-              }}
-            />
-
-            <Route exact path='/Impressum' component={AsyncImpressum} />
-            <Route render={function () {
-              return <p>Not Found</p>
-            }} />
-
-          </Switch>
-        </div>
-      </BrowserRouter>
+            </Switch>
+          </div>
+        </BrowserRouter>
+      </Provider>
     );
   }
 

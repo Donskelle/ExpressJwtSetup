@@ -58,16 +58,18 @@ passport.use('facebookToken', new FacebookTokenStrategy({
   clientID: config.oauth.facebook.clientID,
   clientSecret: config.oauth.facebook.clientSecret,
   profileFields: ["id", "birthday", "first_name", "last_name", "gender", "email", "picture"],
-  scope: ["user_about_me",],
+  scope: ["user_about_me", "user_birthday", "public_profile"],
 }, async (accessToken, refreshToken, profile, done) => {
   try {
+    console.log(profile);
     const existingUser = await User.findOne({ "facebook.id": profile.id });
     if (existingUser) {
       return done(null, existingUser);
     }
 
-
-    const birth_year = parseInt(profile._json.birthday.substring(profile._json.birthday.length - 4));
+    let birth_year;
+    if (profile._json.birthday)
+      birth_year = parseInt(profile._json.birthday.substring(profile._json.birthday.length - 4));
 
     const newUser = new User({
       method: 'facebook',
@@ -80,7 +82,7 @@ passport.use('facebookToken', new FacebookTokenStrategy({
       gender: (profile.gender == 'male') ? 'Herr' : "Frau",
       birth_year,
     });
-    //console.log(profile.photos)
+
     if (profile.photos[0].value) {
       newUser.image = profile.photos[0].value
     }

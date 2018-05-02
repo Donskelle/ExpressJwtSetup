@@ -23,12 +23,14 @@ if (!process.env.NODE_ENV === 'test') {
 
 app.use(bodyParser.json());
 
-// Routes
-app.use('/api/v1/users', require('./routes/users'));
 
 app.use(express.static(path.join(__dirname, './../client/build/')));
-app.use('/index', function (req, res) {
+// Routes
+app.use('/api/v1/users', require('./routes/users'));
+app.use('/*', function (req, res) {
   res.sendFile(path.join(__dirname, './../client/build/index.html'));
 });
+
+
 
 module.exports = app;

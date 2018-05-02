@@ -3,6 +3,8 @@ import axios from 'axios';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Button } from 'material-ui';
+import config from './../../config';
+
 
 class PasswortVergessen extends Component {
 
@@ -24,7 +26,7 @@ class PasswortVergessen extends Component {
 
   handleSubmit() {
     this.setState({ submitted: true }, () => {
-      axios.post('api/v1/users/forgot/', { email: this.state.email })
+      axios.post(config.URL + 'api/v1/users/forgot/', { email: this.state.email })
         .then((response) => {
           console.log(response);
           alert(response.data.message);

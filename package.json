@@ -7,7 +7,7 @@
     "start": "node server/index.js",
     "preinstall": "cd client && npm install && npm run build",
     "server-dev": "cross-env NODE_ENV=test nodemon server/index.js",
-    "client-dev": "npm start --prefix client",
+    "client-dev": "cross-env NODE_ENV=test npm start --prefix client",
     "start-dev": "concurrently \"cd client &&  npm start\" \"npm run server-dev\""
   },
   "author": "",
@@ -18,7 +18,6 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
     "concurrently": "^3.5.1",
-    "cross-env": "^5.0.5",
     "crypto": "^1.0.1",
     "express": "^4.15.3",
     "express-promise-router": "^2.0.0",
@@ -37,6 +36,7 @@
   },
   "devDependencies": {
     "nodemon": "^1.11.0",
-    "rewire": "^2.5.2"
+    "rewire": "^2.5.2",
+    "cross-env": "^5.0.5"
   }
 }

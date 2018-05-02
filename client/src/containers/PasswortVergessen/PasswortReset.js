@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Button } from 'material-ui';
+import config from './../../config';
 
 class PasswortReset extends Component {
 
@@ -46,7 +47,7 @@ class PasswortReset extends Component {
 
         this.setState({ submitted: true },
             () => {
-                axios.post('http://localhost:3000/api/v1/users/forgot/reset', formDataClear)
+                axios.post(`${config.URL}api/v1/users/forgot/reset`, formDataClear)
                     .then((response) => {
                         this.setState({ submitted: false });
                         this.props.handleLogin(response);

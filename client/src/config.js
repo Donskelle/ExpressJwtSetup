@@ -1,12 +1,15 @@
-if (process.env.NODE_ENV === 'test') {
-    module.exports = {
+let config = {};
+if (window.location.href.indexOf('localhost') >= 0) {
+    config = {
         IMAGEBUCKETURL: "https://storage.googleapis.com/demotransportiert.appspot.com/",
         URL: "http://localhost:3000/",
-    }
+    };
 }
 else {
-    module.exports = {
+    config = {
         IMAGEBUCKETURL: "https://storage.googleapis.com/demotransportiert.appspot.com/",
         URL: "https://demotransportiert.appspot.com/",
-    }
+    };
 }
+console.log(config);
+export default config;
