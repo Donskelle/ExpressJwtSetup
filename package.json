@@ -20,6 +20,7 @@
     "concurrently": "^3.5.1",
     "crypto": "^1.0.1",
     "express": "^4.15.3",
+    "express-basic-auth": "^1.1.5",
     "express-promise-router": "^2.0.0",
     "joi": "^10.6.0",
     "jsonwebtoken": "^7.4.1",

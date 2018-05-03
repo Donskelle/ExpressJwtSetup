@@ -64,7 +64,7 @@ class LoginForm extends Component {
         />
         <br />
         <TextValidator
-          label="Password"
+          label="Passwort"
           onChange={this.handleChange}
           name="password"
           type="password"

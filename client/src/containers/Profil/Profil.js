@@ -23,9 +23,9 @@ function Profil(props) {
     let fullName = user.first_name + ' ' + user.last_name;
 
     let image = '';
-    if (props.user.image) {
-        let src = props.user.image;
-        if(isOwnSource(props.user.image)) {
+    if (user.image) {
+        let src = user.image;
+        if(isOwnSource(src)) {
             src += '-sm';
         }
         

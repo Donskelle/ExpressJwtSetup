@@ -1,3 +1,6 @@
+import axios from 'axios';
+import config from '../config'
+
 
 export function getStorage() {
   let jwt, user;
@@ -38,3 +41,10 @@ export function isAuthorized(response) {
   return false;
 }
 
+export function setAuthorizationToken(token) {
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = `${token}`;
+  } else {
+    delete axios.defaults.headers.common['Authorization'];
+  }
+}

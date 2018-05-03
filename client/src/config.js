@@ -11,5 +11,4 @@ else {
         URL: "https://demotransportiert.appspot.com/",
     };
 }
-console.log(config);
 export default config;

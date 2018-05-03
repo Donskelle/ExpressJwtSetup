@@ -75,7 +75,9 @@ class Registrieren extends Component {
             })
             .catch((error) => {
                 this.setState({ submited: false });
-                console.log(error);
+                
+                if(error.response.data && error.response.data.error)
+                    alert(error.response.data.error);
             })
     }
 
@@ -96,6 +98,18 @@ class Registrieren extends Component {
                 debounceTime={500}
             >
                 <h2>Erstelle neuen Nutzer</h2>
+                <SelectValidator
+                    name="gender"
+                    label="Anrede"
+                    size="1"
+                    onChange={this.handleInputChange}
+                    value={formData.gender}
+                    validators={['required']}
+                    errorMessages={['Dieses Feld ist benötigt.']}
+                >
+                    <option value="Frau">Frau</option>
+                    <option value="Herr">Herr</option>
+                </SelectValidator>
                 <TextValidator
                     label="Email"
                     onChange={this.handleInputChange}
@@ -105,7 +119,7 @@ class Registrieren extends Component {
                     value={formData.email}
                 />
                 <TextValidator
-                    label="Password"
+                    label="Passwort"
                     onChange={this.handleInputChange}
                     name="password"
                     type="password"
@@ -114,7 +128,7 @@ class Registrieren extends Component {
                     value={formData.password}
                 />
                 <TextValidator
-                    label="Repeat password"
+                    label="Passwort wiederholen"
                     onChange={this.handleInputChange}
                     name="repeatPassword"
                     type="password"
@@ -138,19 +152,6 @@ class Registrieren extends Component {
                     errorMessages={['Dieses Feld ist benötigt.', 'Nachname hat mindestens zwei Buchstaben.']}
                     value={formData.last_name}
                 />
-
-                <SelectValidator
-                    name="gender"
-                    label="Anrede"
-                    size="1"
-                    onChange={this.handleInputChange}
-                    value={formData.gender}
-                    validators={['required']}
-                    errorMessages={['Dieses Feld ist benötigt.']}
-                >
-                    <option value="Frau">Frau</option>
-                    <option value="Herr">Herr</option>
-                </SelectValidator>
                 <SelectValidator
                     name="birth_year"
                     size="1"

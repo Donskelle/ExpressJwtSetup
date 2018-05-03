@@ -43,8 +43,7 @@ module.exports = {
       await newUser.createHashedPassword();
       await newUser.save();
     } catch (error) {
-      res.status(400).json({ status: false, error });
-      next()
+      return res.status(400).json({ error });
     }
     // Generate the token
     const token = signToken(newUser);
@@ -81,7 +80,7 @@ module.exports = {
     if (user)
       res.json(user.toJSON());
     else {
-      res.json({});
+      res.status(404).json({ error: 'Benutzer nicht gefunden.' });
     }
   },
 
@@ -91,7 +90,7 @@ module.exports = {
 
   updateUser: async (req, res, next) => {
     // deleteOldImage if new image will be set via api
-    if(req.body.image)
+    if (req.body.image)
       deleteImage(req.user.image)
 
     req.user.set(req.body);
@@ -100,13 +99,13 @@ module.exports = {
     if (req.file && req.file.cloudStoragePublicUrl) {
       // deleteOldImage if new image will be set via upload
       deleteImage(req.user.image)
-      
+
       // set new Image
       req.user.image = req.file.cloudStoragePublicUrl;
     }
 
     req.user.save(function (err) {
-      if (err) return res.status(400).json(error);
+      if (err) return res.status(400).json({ error });
 
       res.json(req.user.toJSON());
     });
@@ -125,8 +124,7 @@ module.exports = {
         await user.createHashedPassword();
         await user.save();
       } catch (error) {
-        res.status(400).json({ status: false, error });
-        next();
+        return res.status(400).json({ error });
       }
       const token = signToken(user);
       const responseUser = user.toJSON();
@@ -152,7 +150,7 @@ module.exports = {
           from: 'noreply@transportiert.de',
           subject: 'Passwort zurücksetzten',
           text: `${URL}PasswortVergessen/${token} Token ${token}`,
-        }; s
+        };
         mail.send(msg);
 
         res.status(200).json({ message: "Eine Mail zur Wiederherstellung des Passworts ist unterwegs." });
