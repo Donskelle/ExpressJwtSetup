@@ -42,15 +42,28 @@ module.exports = {
     try {
       await newUser.createHashedPassword();
       await newUser.save();
+
+      const msg = {
+        to: email,
+        from: 'noreply@transportiert.de',
+        subject: 'Benutzer erstellt',
+        text: `Du kannst dich nun unter ${URL} einloggen.`,
+      };
+      mail.send(msg);
+
+      return res.status(200).json({ message: 'Benutzer wurde erstellt'});
     } catch (error) {
       return res.status(400).json({ error });
     }
+    /**
+     * Only send Email
     // Generate the token
     const token = signToken(newUser);
     const responseUser = newUser.toJSON();
-
+    
     // Respond with token
     res.status(200).json({ token, user: responseUser });
+    */
   },
 
   signIn: async (req, res, next) => {
@@ -126,6 +139,7 @@ module.exports = {
       } catch (error) {
         return res.status(400).json({ error });
       }
+      
       const token = signToken(user);
       const responseUser = user.toJSON();
 

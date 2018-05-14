@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { Route, Switch, BrowserRouter, Redirect } from 'react-router-dom';
 
 import Loadable from 'react-loadable';
-import * as jwtDecode from 'jwt-decode';
+import { connect } from 'react-redux';
+
 
 import { clearStorage, getStorage, setStorage } from './../utils/request.js'
 import LoadingComponent from './../components/LoadingComponent';
@@ -24,46 +25,13 @@ const AsyncUserNav = Loadable({
 
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.handleLogin = this.handleLogin.bind(this);
-    this.handleLogout = this.handleLogout.bind(this);
-
-
-    let { jwt, user } = getStorage();
-    if (jwt) {
-      const { exp } = jwtDecode(jwt);
-      if (exp < new Date().getTime()) {
-        clearStorage();
-        jwt = null;
-        user = null;
-      }
-    }
-
-    this.state = { user, jwt };
-  }
-
-  handleLogout(event) {
-    clearStorage();
-    this.setState({ user: null });
-  }
-
-  handleLogin(response) {
-    const { user, token } = response.data;
-
-    setStorage({ user, jwt: token });
-    this.setState({ jwt: token, user });
-  }
-
-  render() {
-    const isLoggedIn = this.state.user ? true : false;
-
+   render() {
     return (
       <BrowserRouter>
         <div className='container'>
-          <div class='header'>
-            <Nav isLoggedIn={isLoggedIn} />
-            <AsyncUserNav user={this.state.user} handleLogout={this.handleLogout} handleLogin={this.handleLogin} />
+          <div className='header'>
+            <Nav />
+            <AsyncUserNav />
           </div>
 
 
@@ -72,8 +40,8 @@ class App extends Component {
             <Route exact path='/Registrieren'
               render={
                 () => {
-                  return this.state.user === null
-                    ? <AsyncRegistrieren handleLogin={this.handleLogin} />
+                  return this.props.user.isAuthenticated === false
+                    ? <AsyncRegistrieren />
                     : <Redirect to='/Profil' />
                 }
               } />
@@ -81,7 +49,7 @@ class App extends Component {
             <Route exact path='/PasswortVergessen'
               render={
                 () => {
-                  return this.state.user === null
+                  return this.props.user.isAuthenticated === false
                     ? <AsyncPasswortVergessen />
                     : <Redirect to='/Profil' />
                 }
@@ -90,17 +58,18 @@ class App extends Component {
             <Route exact path='/PasswortVergessen/:token'
               render={
                 (props) => {
-                  return this.state.user === null
-                    ? <AsyncPasswortReset {...props} handleLogin={this.handleLogin} />
+                  return this.props.user.isAuthenticated === false
+                    ? <AsyncPasswortReset />
                     : <Redirect to='/Profil' />
                 }
               } />
 
             <Route exact path='/Profil'
               render={() => {
-                return this.state.user === null
-                  ? <Redirect to='/Register' />
-                  : <AsyncProfil user={this.state.user} />
+                console.log(this.props)
+                return this.props.user.isAuthenticated === false
+                  ? <Redirect to='/Registrieren' />
+                  : <AsyncProfil user={this.props.user} />
               }}
             />
 
@@ -115,4 +84,6 @@ class App extends Component {
   }
 }
 
-export default App;
+export default connect(state => {
+  return { user: state.user }
+})(App);

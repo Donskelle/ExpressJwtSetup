@@ -5,7 +5,7 @@ import config from '../config'
 export function getStorage() {
   let jwt, user;
   try {
-    user = JSON.parse(localStorage.getItem('user'));
+    user = JSON.parse(atob(localStorage.getItem('user')));
     jwt = localStorage.getItem('jwt');
   }
   catch (e) {
@@ -21,7 +21,7 @@ export function getStorage() {
 export function setStorage({ user, jwt }) {
   try {
     localStorage.setItem('jwt', jwt);
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('user', btoa(JSON.stringify(user)));
   }
   catch (e) {
     console.log(e);

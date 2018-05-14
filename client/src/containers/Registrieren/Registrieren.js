@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-
-
 
 import { TextValidator, ValidatorForm, SelectValidator } from 'react-material-ui-form-validator';
 import { Button } from 'material-ui';
+import { connect } from 'react-redux';
+
 
 import { withRouter } from 'react-router-dom';
-import config from './../../config';
+import { userSignupRequest } from '../../actions/signupActions'
+
 
 
 import './registrieren.css';
@@ -19,13 +19,13 @@ class Registrieren extends Component {
 
         this.state = {
             formData: {
-                first_name: '',
-                last_name: '',
+                first_name: 'Demo',
+                last_name: 'Daten',
                 email: '',
-                gender: '',
-                password: '',
-                repeatPassword: '',
-                birth_year: '',
+                gender: 'Herr',
+                password: '123456',
+                repeatPassword: '123456',
+                birth_year: '1990',
             },
             submited: false,
 
@@ -41,15 +41,6 @@ class Registrieren extends Component {
             }
             return true;
         });
-        /*ValidatorForm.addValidationRule('isEmailAvailable', (value) => {
-            axios.post('/api/users/emailavailable', formDataClear)
-                .then((response) => {
-                    if (response.data == "ok") {
-                        return true
-                    } 
-                    return false
-            })
-        });*/
     }
 
     handleInputChange(event) {
@@ -67,18 +58,33 @@ class Registrieren extends Component {
 
         formDataClear.birth_year = parseInt(birth_year);
 
-        axios.post(config.URL + 'api/v1/users/', formDataClear, { headers: { 'Cache-Control': 'no-cache' } })
+
+        this.props.userSignupRequest(formDataClear)
+            .then(
+                (data) => {
+                    console.log(data);
+                    this.props.history.push("/")
+                },
+                (err) => {
+                    if (err.response && err.response.data) {
+                        if (err.response.data.error)
+                            alert(err.response.data.error);
+                    }
+                }
+            )
+
+        /*axios.post(config.URL + 'api/v1/users/', formDataClear, { headers: { 'Cache-Control': 'no-cache' } })
             .then((response) => {
                 this.setState({ submited: false });
-                this.props.history.push("/");
+                
                 this.props.handleLogin(response);
             })
             .catch((error) => {
                 this.setState({ submited: false });
-                
-                if(error.response.data && error.response.data.error)
+
+                if (error.response.data && error.response.data.error)
                     alert(error.response.data.error);
-            })
+            })*/
     }
 
     render() {
@@ -185,6 +191,13 @@ class Registrieren extends Component {
 }
 
 
+function mapStateToProps(state) {
+    console.log("mapState", state);
+    return { user: state.user };
+}
 
+const mapDispatchToProps = {
+    userSignupRequest,
+}
 
-export default withRouter(Registrieren);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Registrieren));

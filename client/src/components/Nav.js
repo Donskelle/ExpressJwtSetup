@@ -1,8 +1,11 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-function Nav (props) {
-  if (props.isLoggedIn) {
+
+
+function Nav(props) {
+  if (props.isAuthenticated) {
     return (
       <ul className='nav'>
         <li>
@@ -32,4 +35,8 @@ function Nav (props) {
   )
 }
 
-export default Nav;
+function mapStateToProps(state) {
+  return { isAuthenticated: state.user.isAuthenticated };
+}
+
+export default connect(mapStateToProps)(Nav);

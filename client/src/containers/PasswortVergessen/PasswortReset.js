@@ -1,17 +1,20 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+
 
 import { TextValidator, ValidatorForm } from 'react-material-ui-form-validator';
 import { Button } from 'material-ui';
+
+import { resetPasswort } from '../../actions/authActions'
+
+
 import config from './../../config';
 
 class PasswortReset extends Component {
 
     constructor(props) {
         super(props);
-
-        console.log(this);
-
 
         this.state = {
             formData: {
@@ -47,7 +50,17 @@ class PasswortReset extends Component {
 
         this.setState({ submitted: true },
             () => {
-                axios.post(`${config.URL}api/v1/users/forgot/reset`, formDataClear)
+                this.props.resetPasswort(formDataClear)
+                    .then(
+                        data => alert("Passwort erfolgreich zurückgesetzt."),
+                        err => {
+                            if (err.response && err.response.data) {
+                                if (err.response.data.error)
+                                    alert(err.response.data.error);
+                            }
+                        }
+                    )
+                /*axios.post(`${config.URL}api/v1/users/forgot/reset`, formDataClear)
                     .then((response) => {
                         this.setState({ submitted: false });
                         this.props.handleLogin(response);
@@ -55,9 +68,9 @@ class PasswortReset extends Component {
                     .catch((error) => {
                         this.setState({ submitted: false });
                         if (error.response.status === 400) {
-                            alert(error);
+                            alert(error);   
                         }
-                    })
+                    })*/
             });
     }
 
@@ -103,6 +116,8 @@ class PasswortReset extends Component {
         );
     }
 }
+const mapDispatchToProps = {
+    resetPasswort,
+}
 
-
-export default PasswortReset;
+export default connect(null, mapDispatchToProps)(withRouter(PasswortReset));

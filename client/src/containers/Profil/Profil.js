@@ -4,6 +4,7 @@ import Avatar from 'material-ui/Avatar';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 import { isOwnSource } from './../../utils/helper';
+import { connect } from 'react-redux';
 
 
 
@@ -19,16 +20,17 @@ const styles = {
 };
 
 function Profil(props) {
+    console.log(props);
     const { classes, user } = props;
     let fullName = user.first_name + ' ' + user.last_name;
 
     let image = '';
     if (user.image) {
         let src = user.image;
-        if(isOwnSource(src)) {
+        if (isOwnSource(src)) {
             src += '-sm';
         }
-        
+
         image = <Avatar
             alt={props.user.first_name}
             src={src}
@@ -52,4 +54,8 @@ function Profil(props) {
 }
 
 
-export default withStyles(styles.classes)(Profil);
+export default withStyles(styles.classes)(connect(
+    state => ({
+        user: state.user.user
+    })
+)(Profil));
