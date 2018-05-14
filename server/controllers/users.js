@@ -139,8 +139,8 @@ module.exports = {
       } catch (error) {
         return res.status(400).json({ error });
       }
-      
-      const token = signToken(user);
+
+      const token = signToken(user);  
       const responseUser = user.toJSON();
 
       res.status(200).json({ token, user: responseUser });

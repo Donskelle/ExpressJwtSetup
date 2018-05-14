@@ -23,7 +23,7 @@ export function logout() {
 
 export function login(data) {
   return dispatch => {
-    return axios.post(config.URL + '/api/v1/users/signin', data).then(res => {
+    return axios.post(config.URL + 'api/v1/users/signin', data).then(res => {
       const { token, user } = res.data;
       setStorage({ user, jwt: token });
 

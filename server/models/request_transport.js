@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 const sanitizerPlugin = require('mongoose-sanitizer');
 
-const Schema = mongoose.Schema;
 
 // Create a schema
-const requestTransportSchema = new Schema({
+const requestTransportSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
