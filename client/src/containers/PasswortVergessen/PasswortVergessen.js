@@ -26,23 +26,24 @@ class PasswortVergessen extends Component {
   }
 
   handleSubmit() {
-    this.setState({ submitted: true }, () => {
-      this.props.forgotPasswort({ email: this.state.email })
-        .then((response) => {
-          alert(response.data.message);
-          this.setState({
-            email: '',
-            submitted: false,
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          this.setState({ submitted: false });
-          if (error.response.status === 400) {
-            alert(error.response.data.error);
-          }
-        })
-    });
+    this.setState(
+      { submitted: true },
+      () => {
+        this.props.forgotPasswort({ email: this.state.email })
+          .then((response) => {
+            alert(response.data.message);
+            this.setState({
+              email: '',
+              submitted: false,
+            });
+          })
+          .catch((error) => {
+            this.setState({ submitted: false });
+            if (error.response.status === 400) {
+              alert(error.response.data.error);
+            }
+          })
+      });
   }
 
   render() {

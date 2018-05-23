@@ -74,5 +74,7 @@ export function resetPasswort(data) {
 
 
 export function forgotPasswort(data) {
-    axios.post(`${config.URL}api/v1/users/forgot/`, data)
+  return dispatch => {
+    return axios.post(`${config.URL}api/v1/users/forgot/`, data)
+  }
 }
